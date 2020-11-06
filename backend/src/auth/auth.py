@@ -30,7 +30,6 @@ class AuthError(Exception):
     return the token part of the header
 '''
 def get_token_auth_header():
-    #raise Exception('Not Implemented')
     auth = request.headers.get('Authorization', None)
     if not auth:
         raise AuthError({
@@ -40,9 +39,9 @@ def get_token_auth_header():
 
     parts = auth.split()
 
-    # verify authorization keyword is bearer
+    # Verify authorization keyword is bearer
     if parts[0].lower() != 'bearer':
-        # raise an error if it is not
+        # Raise an error if it is not
         raise AuthError({
             'code': 'invalid_header',
             'description': 'Authorization header must start with "bearer".'
@@ -74,10 +73,9 @@ def get_token_auth_header():
     return true otherwise
 '''
 def check_permissions(permission, payload):
-    #raise Exception('Not Implemented')
     # If permission is not found in payload
     if 'permissions' not in payload:
-        # raise an invalid error
+        # Raise an invalid error
         raise AuthError({
             'code': 'invalid_claims',
             'description': 'Permission not included in JWT.'
@@ -85,7 +83,7 @@ def check_permissions(permission, payload):
 
     # If the user permission does include permission
     if permission not in payload['permissions']:
-        # raise an Unauthorized error
+        # Raise an Unauthorized error
         raise AuthError({
             'code': 'Unauthorized',
             'description': 'Permission not found.'
@@ -107,9 +105,8 @@ def check_permissions(permission, payload):
     !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
 '''
 def verify_decode_jwt(token):
-    #raise Exception('Not Implemented')
 
-    # the public key
+    # The public key
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
 
@@ -134,7 +131,7 @@ def verify_decode_jwt(token):
                 'e': key['e']
             }
 
-    # validate the token
+    # Validate the token
     if rsa_key:
         try:
             payload = jwt.decode(
@@ -147,7 +144,7 @@ def verify_decode_jwt(token):
 
             return payload
 
-        # catch errors
+        # Catch errors
         except jwt.ExpiredSignatureError:
             raise AuthError({
                 'code': 'token_expired',
@@ -167,7 +164,7 @@ def verify_decode_jwt(token):
                 'description': 'Unable to parse authentication token.'
             }, 400)
 
-    # raise an invalid header error
+    # Raise an invalid header error
     raise AuthError({
         'code': 'invalid_header',
         'description': 'Unable to find the appropriate key.'
@@ -191,7 +188,7 @@ def requires_auth(permission=''):
             try:
                 payload = verify_decode_jwt(token)
             except:
-                # raise an invalid token error
+                # Raise an invalid token error
                 raise AuthError({
                     'code': 'invalid_token',
                     'description': 'Access denied due to invalid token'

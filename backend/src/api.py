@@ -11,7 +11,7 @@ app = Flask(__name__)
 setup_db(app)
 CORS(app, resources={r"*": {'origins': r"*"}})
 
-#CORS headers
+# CORS headers
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origions', '*')
@@ -105,7 +105,7 @@ def post_new_drinks(token):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-# to edit a drink with id
+# To edit a drink with id
 @app.route('/drinks/<int:drink_id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
 def edit_drink(payload, drink_id):
@@ -120,7 +120,7 @@ def edit_drink(payload, drink_id):
     title = data.get('title', None)
     recipe = data.get('recipe', None)
 
-    # update with new data
+    # Update with new data
     if title is not None:
         drink.title = title
     if recipe is not None:
